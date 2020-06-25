@@ -211,7 +211,7 @@ namespace MediaToolkit
     /// <param name="engineParameters"> The engine parameters. </param>
     private void StartFFmpegProcess(EngineParameters engineParameters)
     {
-      List<string> receivedMessagesLog = new List<string>();
+      string receivedMessagesLog = String.Empty;
       TimeSpan totalMediaDuration = new TimeSpan();
 
       ProcessStartInfo processStartInfo = engineParameters.HasCustomArguments
@@ -235,7 +235,7 @@ namespace MediaToolkit
 #endif
                   try
           {
-            receivedMessagesLog.Insert(0, received.Data);
+            receivedMessagesLog += received.Data + Environment.NewLine;
             if(engineParameters.InputFile != null)
             {
               RegexEngine.TestVideo(received.Data, engineParameters);
@@ -288,10 +288,10 @@ namespace MediaToolkit
         this.FFmpegProcess.BeginErrorReadLine();
         this.FFmpegProcess.WaitForExit();
 
-        if((this.FFmpegProcess.ExitCode != 0 && this.FFmpegProcess.ExitCode != 1) || caughtException != null)
+        if((this.FFmpegProcess.ExitCode != 0) || caughtException != null)
         {
           throw new Exception(
-              this.FFmpegProcess.ExitCode + ": " + receivedMessagesLog[1] + receivedMessagesLog[0],
+              this.FFmpegProcess.ExitCode + ": " + receivedMessagesLog,
               caughtException);
         }
       }
