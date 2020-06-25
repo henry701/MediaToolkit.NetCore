@@ -24,19 +24,6 @@ namespace MediaToolkit.Test
       // Raise progress events?
       _printToConsoleEnabled = true;
 
-      const string inputFile = @"";
-      const string outputFile = @"";
-
-      // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-      if(inputFile != "")
-      {
-        _inputFilePath = inputFile;
-        if(outputFile != "")
-          _outputFilePath = outputFile;
-
-        return;
-      }
-
       var testAssetsPath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestVideo");
       var testAssetsFullPath = Path.GetFullPath(testAssetsPath);
 

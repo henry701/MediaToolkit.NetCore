@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.Threading;
 using MediaToolkit.Properties;
 using MediaToolkit.Util;
+using Microsoft.Extensions.Logging;
 
 namespace MediaToolkit
 {
@@ -14,8 +15,6 @@ namespace MediaToolkit
     /// <summary>   Used for locking the FFmpeg process to one thread. </summary>
     private const string LockName = "MediaToolkit.Engine.LockName";
 
-    private readonly string _ffprobeFilePath;
-
     private readonly IFileSystem _fileSystem;
 
     /// <summary>   The Mutex. </summary>
@@ -24,12 +23,15 @@ namespace MediaToolkit
     /// <summary>   The ffmpeg process. </summary>
     protected Process FFmpegProcess;
 
+    protected ILogger Logger;
+
     /// <summary>
     /// Initializes FFmpeg.exe; Ensuring that there is a copy in the clients temp folder &amp; isn't in use by another process.
     /// Assumes that ffprobe located in the same directory as ffmpeg
     /// </summary>
-    protected EngineBase(string ffMpegPath, IFileSystem fileSystem)
+    protected EngineBase(string ffMpegPath, IFileSystem fileSystem, ILogger logger)
     {
+      Logger = logger;
       _fileSystem = fileSystem;
       Mutex = new Mutex(false, LockName);
       isDisposed = false;

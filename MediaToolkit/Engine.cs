@@ -8,12 +8,12 @@ using MediaToolkit.Model;
 using MediaToolkit.Options;
 using MediaToolkit.Properties;
 using MediaToolkit.Util;
+using Microsoft.Extensions.Logging;
 
 namespace MediaToolkit
 {
   /// -------------------------------------------------------------------------------------------------
   /// <summary>   An engine. This class cannot be inherited. </summary>
-  [Obsolete("Use the new MediaToolkit service.")]
   public class Engine : EngineBase
   {
     /// <summary>
@@ -22,7 +22,12 @@ namespace MediaToolkit
     public event EventHandler<ConversionCompleteEventArgs> ConversionCompleteEvent;
 
     public Engine(string ffMpegPath, IFileSystem fileSystem)
-        : base(ffMpegPath, fileSystem)
+        : base(ffMpegPath, fileSystem, null)
+    {
+    }
+
+    public Engine(string ffMpegPath, IFileSystem fileSystem, ILogger logger)
+        : base(ffMpegPath, fileSystem, logger)
     {
     }
 
@@ -217,6 +222,8 @@ namespace MediaToolkit
       ProcessStartInfo processStartInfo = engineParameters.HasCustomArguments
           ? this.GenerateStartInfo(engineParameters.CustomArguments)
           : this.GenerateStartInfo(engineParameters);
+
+      Logger?.LogInformation("Starting FFmpegProcess with info {StartInfo}", processStartInfo);
 
       using(this.FFmpegProcess = Process.Start(processStartInfo))
       {
