@@ -223,7 +223,7 @@ namespace MediaToolkit
           ? this.GenerateStartInfo(engineParameters.CustomArguments)
           : this.GenerateStartInfo(engineParameters);
 
-      Logger?.LogInformation("Starting FFmpegProcess with info {StartInfo}", processStartInfo);
+      Logger?.LogInformation("Starting FFmpegProcess with arguments {Args}", processStartInfo.Arguments);
 
       using(this.FFmpegProcess = Process.Start(processStartInfo))
       {
