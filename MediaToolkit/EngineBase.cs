@@ -12,13 +12,7 @@ namespace MediaToolkit
   {
     private bool isDisposed;
 
-    /// <summary>   Used for locking the FFmpeg process to one thread. </summary>
-    private const string LockName = "MediaToolkit.Engine.LockName";
-
     private readonly IFileSystem _fileSystem;
-
-    /// <summary>   The Mutex. </summary>
-    protected readonly Mutex Mutex;
 
     /// <summary>   The ffmpeg process. </summary>
     protected Process FFmpegProcess;
@@ -33,7 +27,6 @@ namespace MediaToolkit
     {
       Logger = logger;
       _fileSystem = fileSystem;
-      Mutex = new Mutex(false, LockName);
       isDisposed = false;
 
       if(ffMpegPath.IsNullOrWhiteSpace())
@@ -44,29 +37,10 @@ namespace MediaToolkit
       FfprobeFilePath = _fileSystem.Path.Combine(ffmpegDirectoryPath, "ffprobe.exe");
 
       EnsureFFmpegFileExists();
-      EnsureFFmpegIsNotUsed();
     }
 
     public string FfmpegFilePath { get; }
     public string FfprobeFilePath { get; }
-
-    private void EnsureFFmpegIsNotUsed()
-    {
-      try
-      {
-        this.Mutex.WaitOne();
-        Process.GetProcessesByName(Resources.FFmpegProcessName)
-            .ForEach(process =>
-            {
-              process.Kill();
-              process.WaitForExit();
-            });
-      }
-      finally
-      {
-        this.Mutex.ReleaseMutex();
-      }
-    }
 
     private void EnsureFFmpegFileExists()
     {
@@ -76,7 +50,6 @@ namespace MediaToolkit
       if(!_fileSystem.File.Exists(FfprobeFilePath))
         throw new InvalidOperationException("Unable to locate ffprobe executable. Make sure it exists at path passed to Engine constructor");
     }
-
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary>

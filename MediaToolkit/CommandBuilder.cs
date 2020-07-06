@@ -28,7 +28,7 @@ namespace MediaToolkit
 
     private static string GetMetadata(MediaFile inputFile)
     {
-      return string.Format("-i \"{0}\" ", inputFile.Filename);
+      return string.Format("-i \"{0}\" -f null NULL__FILE", inputFile.Filename);
     }
 
     private static string GetThumbnail(MediaFile inputFile, MediaFile outputFile, ConversionOptions conversionOptions)

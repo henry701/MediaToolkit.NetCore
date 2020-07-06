@@ -126,15 +126,7 @@ namespace MediaToolkit
         throw new FileNotFoundException(Resources.Exception_Media_Input_File_Not_Found, engineParameters.InputFile.Filename);
       }
 
-      try
-      {
-        this.Mutex.WaitOne();
-        this.StartFFmpegProcess(engineParameters);
-      }
-      finally
-      {
-        this.Mutex.ReleaseMutex();
-      }
+      this.StartFFmpegProcess(engineParameters);
     }
 
     private ProcessStartInfo GenerateStartInfo(EngineParameters engineParameters)
@@ -261,18 +253,12 @@ namespace MediaToolkit
               }
             }
 
-            ConversionCompleteEventArgs convertCompleteEvent;
             ConvertProgressEventArgs progressEvent;
 
             if(RegexEngine.IsProgressData(received.Data, out progressEvent))
             {
               progressEvent.TotalDuration = totalMediaDuration;
               this.OnProgressChanged(progressEvent);
-            }
-            else if(RegexEngine.IsConvertCompleteData(received.Data, out convertCompleteEvent))
-            {
-              convertCompleteEvent.TotalDuration = totalMediaDuration;
-              this.OnConversionComplete(convertCompleteEvent);
             }
           }
           catch(Exception ex)
@@ -300,6 +286,13 @@ namespace MediaToolkit
           throw new Exception(
               this.FFmpegProcess.ExitCode + ": " + receivedMessagesLog,
               caughtException);
+        }
+
+        ConversionCompleteEventArgs convertCompleteEvent;
+        if(RegexEngine.IsConvertCompleteData(receivedMessagesLog, out convertCompleteEvent))
+        {
+          convertCompleteEvent.TotalDuration = totalMediaDuration;
+          this.OnConversionComplete(convertCompleteEvent);
         }
       }
     }

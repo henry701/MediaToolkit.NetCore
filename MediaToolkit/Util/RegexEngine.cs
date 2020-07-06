@@ -53,7 +53,7 @@ namespace MediaToolkit.Util
       Match matchTime = Index[Find.ConvertProgressTime].Match(data);
       Match matchBitrate = Index[Find.ConvertProgressBitrate].Match(data);
 
-      if(!matchSize.Success || !matchTime.Success || !matchBitrate.Success)
+      if(!matchSize.Success && !matchTime.Success)
         return false;
 
       TimeSpan processedDuration;
@@ -125,17 +125,13 @@ namespace MediaToolkit.Util
       Match matchTime = Index[Find.ConvertProgressTime].Match(data);
       Match matchBitrate = Index[Find.ConvertProgressBitrate].Match(data);
 
-      if(!matchFrame.Success || !matchFps.Success || !matchFinished.Success || !matchTime.Success ||
-          !matchBitrate.Success)
-        return false;
-
       TimeSpan processedDuration;
       TimeSpan.TryParse(matchTime.Groups[1].Value, out processedDuration);
 
-      long frame = Convert.ToInt64(matchFrame.Groups[1].Value, CultureInfo.InvariantCulture);
-      double fps = Convert.ToDouble(matchFps.Groups[1].Value, CultureInfo.InvariantCulture);
-      int sizeKb = Convert.ToInt32(matchFinished.Groups[1].Value, CultureInfo.InvariantCulture);
-      double bitrate = Convert.ToDouble(matchBitrate.Groups[1].Value, CultureInfo.InvariantCulture);
+      long? frame = GetLongValue(matchFrame);
+      double? fps = GetDoubleValue(matchFps);
+      int? sizeKb = GetIntValue(matchFinished);
+      double? bitrate = GetDoubleValue(matchBitrate);
 
       conversionCompleteEvent = new ConversionCompleteEventArgs(processedDuration, TimeSpan.Zero, frame, fps, sizeKb, bitrate);
 
