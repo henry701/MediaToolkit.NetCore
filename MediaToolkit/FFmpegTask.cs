@@ -11,6 +11,7 @@ namespace MediaToolkit
     GetMetaData,
 
     /// <summary>   An enum constant representing the get thumbnail option. </summary>
-    GetThumbnail
+    GetThumbnail,
+    ProbeMetaData,
   }
 }
