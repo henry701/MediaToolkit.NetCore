@@ -30,7 +30,7 @@ namespace MediaToolkit
 
         private static string ProbeMetaData(MediaFile inputFile)
         {
-            return string.Format("-print_format json -show_format -show_streams \"{0}\" -", inputFile.Filename);
+            return string.Format("-print_format json -show_format -show_streams \"{0}\"", inputFile.Filename);
         }
 
         private static string GetMetadata(MediaFile inputFile)

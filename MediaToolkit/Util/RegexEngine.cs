@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Linq;
 using System.Collections.Immutable;
 using System;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MediaToolkit.Model;
 using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace MediaToolkit.Util
 {
@@ -212,31 +214,42 @@ namespace MediaToolkit.Util
             VideoFps
         }
 
-        internal static bool IsProbeCompleteData(string receivedMessagesLog, out ProbeCompleteEventArgs convertCompleteEventArgs)
+        internal static bool IsProbeCompleteData(string receivedMessagesLog, out ProbeCompleteEventArgs convertCompleteEventArgs, out Exception error)
         {
             try
             {
-                dynamic parsed = Newtonsoft.Json.Linq.JObject.Parse(receivedMessagesLog);
-                dynamic parsedFormat = parsed.format;
-                IList<dynamic> streams = parsed.streams ?? System.Collections.Immutable.ImmutableList<dynamic>.Empty;
-                string parsedFormatDuration = Convert.ToString((object) parsedFormat.duration);
-                string parsedFormatSize = Convert.ToString((object) parsedFormat);
+                JObject parsed = Newtonsoft.Json.Linq.JObject.Parse(receivedMessagesLog);
+                JObject parsedFormat = parsed["format"].Value<JObject>();
+                IList<JObject> streams = parsed["streams"].ToObject<List<JObject>>() ?? (IList<JObject>) System.Collections.Immutable.ImmutableList<JObject>.Empty;
+                string parsedFormatDuration = Convert.ToString(parsedFormat["duration"]);
+                string parsedFormatSize = Convert.ToString(parsedFormat["size"]);
                 convertCompleteEventArgs = new ProbeCompleteEventArgs(
                     totalDuration: String.IsNullOrWhiteSpace(parsedFormatDuration) ? default : TimeSpan.FromSeconds(Convert.ToDouble(parsedFormatDuration)),
                     frames: null,
                     fps: null,
                     sizeKb: String.IsNullOrWhiteSpace(parsedFormatSize) ? null : new Nullable<int>(Convert.ToInt32(parsedFormatSize)),
                     bitrate: null,
-                    width: streams.Any() ? new Nullable<int>(streams.Max(x => Convert.ToInt32(Convert.ToString((object) x.width)))) : null,
-                    height: streams.Any() ? new Nullable<int>(streams.Max(x => Convert.ToInt32(Convert.ToString((object) x.height)))) : null
+                    width: streams.Any() ? new Nullable<int>(streams.Max(x => IsNullOrEmpty(x["width"]) ? Int32.MinValue : Convert.ToInt32(Convert.ToString(x["width"])))) : null,
+                    height: streams.Any() ? new Nullable<int>(streams.Max(x => IsNullOrEmpty(x["height"]) ? Int32.MinValue : Convert.ToInt32(Convert.ToString(x["height"])))) : null
                 );
+                error = null;
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                error = e;
                 convertCompleteEventArgs = null;
                 return false;
             }
+        }
+
+        internal static bool IsNullOrEmpty(JToken token)
+        {
+            return (token == null) ||
+                (token.Type == JTokenType.Array && !token.HasValues) ||
+                (token.Type == JTokenType.Object && !token.HasValues) ||
+                (token.Type == JTokenType.String && token.ToString() == String.Empty) ||
+                (token.Type == JTokenType.Null);
         }
     }
 }

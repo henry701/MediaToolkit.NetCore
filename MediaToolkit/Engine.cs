@@ -168,7 +168,7 @@ namespace MediaToolkit
         {
             return new ProcessStartInfo
             {
-                Arguments = "-nostdin -y -loglevel info " + arguments,
+                Arguments = (probe ? "" : "-nostdin -y -loglevel info ") + arguments,
                 FileName = probe ? this.FfprobeFilePath : this.FfmpegFilePath,
                 CreateNoWindow = true,
                 RedirectStandardInput = false,
@@ -368,6 +368,7 @@ namespace MediaToolkit
                 };
 
                 this.FFmpegProcess.BeginErrorReadLine();
+                this.FFmpegProcess.BeginOutputReadLine();
                 this.FFmpegProcess.WaitForExit();
 
                 if ((this.FFmpegProcess.ExitCode != 0) || caughtException != null)
@@ -378,9 +379,14 @@ namespace MediaToolkit
                 }
 
                 ProbeCompleteEventArgs convertCompleteEventArgs;
-                if (RegexEngine.IsProbeCompleteData(receivedOutMessagesLog, out convertCompleteEventArgs))
+                Exception error;
+                if (RegexEngine.IsProbeCompleteData(receivedOutMessagesLog, out convertCompleteEventArgs, out error))
                 {
                     this.OnProbeComplete(convertCompleteEventArgs);
+                }
+                else
+                {
+                    Logger.LogWarning("Could not retrieve metadata due to error! {Error}", error);
                 }
             }
         }
