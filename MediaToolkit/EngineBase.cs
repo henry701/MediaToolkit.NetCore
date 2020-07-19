@@ -23,7 +23,7 @@ namespace MediaToolkit
     /// Initializes FFmpeg.exe; Ensuring that there is a copy in the clients temp folder &amp; isn't in use by another process.
     /// Assumes that ffprobe located in the same directory as ffmpeg
     /// </summary>
-    protected EngineBase(string ffMpegPath, IFileSystem fileSystem, ILogger logger)
+    protected EngineBase(string ffMpegPath, string ffProbePath, IFileSystem fileSystem, ILogger logger)
     {
       Logger = logger;
       _fileSystem = fileSystem;
@@ -33,8 +33,7 @@ namespace MediaToolkit
         throw new ArgumentException(nameof(ffMpegPath));
 
       FfmpegFilePath = ffMpegPath;
-      var ffmpegDirectoryPath = _fileSystem.FileInfo.FromFileName(ffMpegPath).DirectoryName;
-      FfprobeFilePath = _fileSystem.Path.Combine(ffmpegDirectoryPath, "ffprobe.exe");
+      FfprobeFilePath = ffProbePath;
 
       EnsureFFmpegFileExists();
     }

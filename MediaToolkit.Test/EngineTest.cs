@@ -19,7 +19,7 @@ namespace MediaToolkit.Test
                 {@"c:\some\folder\path\ffprobe.exe", new MockFileData("")}
             });
 
-      var engine = new Engine(@"c:\some\folder\path\ffmpeg.exe", fileSystem);
+      var engine = new Engine(@"c:\some\folder\path\ffmpeg.exe", @"c:\some\folder\path\ffprobe.exe", fileSystem);
 
       Assert.Equal(@"c:\some\folder\path\ffmpeg.exe", engine.FfmpegFilePath);
       Assert.Equal(@"c:\some\folder\path\ffprobe.exe", engine.FfprobeFilePath);

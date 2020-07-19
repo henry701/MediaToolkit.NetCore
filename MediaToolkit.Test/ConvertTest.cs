@@ -16,6 +16,7 @@ namespace MediaToolkit.Test
     private string _outputFilePath = "";
     private bool _printToConsoleEnabled;
     private readonly string _ffmpegFilePath = @"C:\ffmpeg\ffmpeg.exe";
+    private readonly string _ffprobeFilePath = @"C:\ffmmpeg\ffprobe.exe";
     private readonly IFileSystem _fileSystem = new FileSystem();
 
 
@@ -53,7 +54,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputFilePath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -81,7 +82,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputFilePath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -113,7 +114,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputFilePath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -137,7 +138,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputUrlPath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -157,7 +158,7 @@ namespace MediaToolkit.Test
     {
       var inputFile = new MediaFile { Filename = _inputFilePath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
         engine.GetMetadata(inputFile);
 
       Metadata inputMeta = inputFile.Metadata;
@@ -188,7 +189,7 @@ namespace MediaToolkit.Test
       var outputFile = new MediaFile { Filename = outputPath };
 
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -213,7 +214,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputFilePath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -241,7 +242,7 @@ namespace MediaToolkit.Test
 
       var conversionOptions = new ConversionOptions { Target = Target.DVD, TargetStandard = TargetStandard.PAL };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;
@@ -272,7 +273,7 @@ namespace MediaToolkit.Test
       };
 
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.Convert(inputFile, outputFile, conversionOptions);
       }
@@ -286,7 +287,7 @@ namespace MediaToolkit.Test
       var inputFile = new MediaFile { Filename = _inputFilePath };
       var outputFile = new MediaFile { Filename = outputPath };
 
-      using(var engine = new Engine(this._ffmpegFilePath, this._fileSystem))
+      using(var engine = new Engine(this._ffmpegFilePath, this._ffprobeFilePath, this._fileSystem))
       {
         engine.ConvertProgressEvent += engine_ConvertProgressEvent;
         engine.ConversionCompleteEvent += engine_ConversionCompleteEvent;

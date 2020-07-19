@@ -27,13 +27,13 @@ namespace MediaToolkit
         /// </summary>
         public event EventHandler<ProbeCompleteEventArgs> ProbeCompleteEvent;
 
-        public Engine(string ffMpegPath, IFileSystem fileSystem)
-            : base(ffMpegPath, fileSystem, null)
+        public Engine(string ffMpegPath, string ffProbePath, IFileSystem fileSystem)
+            : base(ffMpegPath, ffProbePath, fileSystem, null)
         {
         }
 
-        public Engine(string ffMpegPath, IFileSystem fileSystem, ILogger logger)
-            : base(ffMpegPath, fileSystem, logger)
+        public Engine(string ffMpegPath, string ffProbePath, IFileSystem fileSystem, ILogger logger)
+            : base(ffMpegPath, ffProbePath, fileSystem, logger)
         {
         }
 
